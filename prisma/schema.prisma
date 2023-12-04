@@ -11,7 +11,63 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String
-  name  String
+  id    String @id @default(uuid())
+  email String @unique
+  Slot  Slot?
+
+  @@map("users")
+}
+
+model Time {
+  id        String   @id @default(uuid())
+  startTime DateTime @map("start_time")
+  endTime   DateTime @map("end_time")
+  Slot      Slot?
+
+  @@map("times")
+}
+
+model Slot {
+  id       String   @id @default(uuid())
+  isBooked Boolean  @map("is_booked")
+  date     DateTime
+  userId   String   @unique @map("user_id")
+  user     User     @relation(fields: [userId], references: [id])
+  timeId   String   @unique @map("time_id")
+  time     Time     @relation(fields: [timeId], references: [id])
+  Doctor   Doctor[]
+
+  @@map("slots")
+}
+
+model Fee {
+  id     String  @id @default(uuid())
+  amount Int
+  Doctor Doctor?
+
+  @@map("fees")
+}
+
+model Clinic {
+  id       String   @id @default(uuid())
+  name     String
+  location String
+  Doctor   Doctor[]
+
+  @@map("clinics")
+}
+
+model Doctor {
+  id          String @id @default(uuid())
+  name        String
+  speciality  String
+  designation String
+  feeId       String @unique @map("fee_id")
+  fee         Fee    @relation(fields: [feeId], references: [id])
+  clinicId    String @map("clinic_id")
+  clinic      Clinic @relation(fields: [clinicId], references: [id])
+  slotId      String @map("slot_id")
+  slot        Slot   @relation(fields: [slotId], references: [id])
+
+  @@map("doctors")
 }

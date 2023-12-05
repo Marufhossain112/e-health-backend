@@ -19,10 +19,9 @@ model User {
 }
 
 model Time {
-  id        String   @id @default(uuid())
-  startTime DateTime @map("start_time")
-  endTime   DateTime @map("end_time")
-  Slot      Slot?
+  id   String   @id @default(uuid())
+  time DateTime @map("time")
+  Slot Slot[]
 
   @@map("times")
 }
@@ -33,7 +32,7 @@ model Slot {
   date     DateTime
   userId   String   @unique @map("user_id")
   user     User     @relation(fields: [userId], references: [id])
-  timeId   String   @unique @map("time_id")
+  timeId   String   @map("time_id")
   time     Time     @relation(fields: [timeId], references: [id])
   Doctor   Doctor[]
 
